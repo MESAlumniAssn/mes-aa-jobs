@@ -6,7 +6,7 @@ h2==3.2.0
 hpack==3.0.0
 http3==0.6.7
 hyperframe==5.2.0
-idna==3.2
+idna==2.*
 python-dotenv==0.19.0
 requests==2.26.0
 requests-async==0.6.2
