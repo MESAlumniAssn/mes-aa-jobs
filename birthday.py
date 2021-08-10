@@ -20,6 +20,9 @@ async def send_birthday_wishes():
         if birthdays.status_code == 400:
             return
 
+        if not birthdays:
+            return
+
         for birthday in birthdays.json():
             await requests.post(
                 os.getenv("API_URL") + "/email/birthday",
