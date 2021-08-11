@@ -4,6 +4,8 @@ import os
 import dotenv
 import requests_async as requests
 
+from helpers.update_job_status import update_job_run_date
+
 dotenv.load_dotenv()
 
 job_secret = os.getenv("JOB_SECRET")
@@ -17,10 +19,11 @@ async def send_renewal_notifications(days):
         )
 
         # Did not send the header
-        if upcoming_renewals == 400:
+        if upcoming_renewals.status_code == 400:
             return
 
         if not upcoming_renewals.json():
+            await update_job_run_date(os.getenv("RENEWAL_NOTIFICATION_JOB_ID"))
             return
 
         for renewal in upcoming_renewals.json():
@@ -53,12 +56,7 @@ async def send_renewal_notifications(days):
             )
 
         else:
-            await requests.put(
-                os.getenv("API_URL") + "/jobs",
-                json={"job_id": int(os.getenv("RENEWAL_NOTIFICATION_JOB_ID"))},
-                headers={"job-secret": job_secret},
-            )
-
+            await update_job_run_date(os.getenv("RENEWAL_NOTIFICATION_JOB_ID"))
     except Exception:
         raise (Exception)
 

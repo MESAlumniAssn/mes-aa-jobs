@@ -4,6 +4,8 @@ import os
 import dotenv
 import requests_async as requests
 
+from helpers.update_job_status import update_job_run_date
+
 dotenv.load_dotenv()
 
 job_secret = os.getenv("JOB_SECRET")
@@ -21,6 +23,7 @@ async def send_birthday_wishes():
             return
 
         if not birthdays.json():
+            await update_job_run_date(os.getenv("BIRTHDAY_JOB_ID"))
             return
 
         for birthday in birthdays.json():
@@ -31,11 +34,7 @@ async def send_birthday_wishes():
             )
 
         else:
-            await requests.put(
-                os.getenv("API_URL") + "/jobs",
-                json={"job_id": int(os.getenv("BIRTHDAY_JOB_ID"))},
-                headers={"job-secret": job_secret},
-            )
+            await update_job_run_date(os.getenv("BIRTHDAY_JOB_ID"))
     except Exception:
         raise (Exception)
 

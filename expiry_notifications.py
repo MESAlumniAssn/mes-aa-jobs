@@ -4,6 +4,8 @@ import os
 import dotenv
 import requests_async as requests
 
+from helpers.update_job_status import update_job_run_date
+
 dotenv.load_dotenv()
 
 job_secret = os.getenv("JOB_SECRET")
@@ -17,10 +19,11 @@ async def send_expiry_notifications():
         )
 
         # Did not send the header
-        if expired_memberships == 400:
+        if expired_memberships.status_code == 400:
             return
 
         if not expired_memberships.json():
+            await update_job_run_date(os.getenv("EXPIRY_NOTIFICATION_JOB_ID"))
             return
 
         for membership in expired_memberships.json():
@@ -45,11 +48,7 @@ async def send_expiry_notifications():
             )
 
         else:
-            await requests.put(
-                os.getenv("API_URL") + "/jobs",
-                json={"job_id": int(os.getenv("EXPIRY_NOTIFICATION_JOB_ID"))},
-                headers={"job-secret": job_secret},
-            )
+            await update_job_run_date(os.getenv("EXPIRY_NOTIFICATION_JOB_ID"))
 
     except Exception:
         raise (Exception)
