@@ -20,7 +20,7 @@ async def send_birthday_wishes():
         if birthdays.status_code == 400:
             return
 
-        if not birthdays:
+        if not birthdays.json():
             return
 
         for birthday in birthdays.json():

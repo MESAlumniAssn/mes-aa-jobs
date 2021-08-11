@@ -20,7 +20,7 @@ async def send_renewal_notifications(days):
         if upcoming_renewals == 400:
             return
 
-        if not upcoming_renewals:
+        if not upcoming_renewals.json():
             return
 
         for renewal in upcoming_renewals.json():

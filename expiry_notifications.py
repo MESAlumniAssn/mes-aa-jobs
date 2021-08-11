@@ -20,7 +20,7 @@ async def send_expiry_notifications():
         if expired_memberships == 400:
             return
 
-        if not expired_memberships:
+        if not expired_memberships.json():
             return
 
         for membership in expired_memberships.json():
